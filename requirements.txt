@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+gunicorn
+google-api-python-client
+google-auth
+python-dotenv
+jinja2
+python-multipart

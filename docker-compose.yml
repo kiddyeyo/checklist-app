@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  checklist-app:
+    container_name: checklist-app
+    build: .
+    ports:
+      - "8000:8000"
+    networks:
+      - infraestructura_app-network
+    environment:
+      # Ruta al JSON de credenciales de Google Service Account
+      - GOOGLE_SHEETS_CREDENTIALS_JSON=/app/credentials.json
+      # ID de tu hoja de cálculo
+      - SHEETS_SPREADSHEET_ID=1I44YXC1eksW3k0xbN4wfsusmaT0oCISwQYyeuUFdrQ4
+    volumes:
+      - ./credentials.json:/app/credentials.json:ro
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.checklist.rule=Host(`checklist.sintaq.net`)"
+      - "traefik.http.routers.checklist.entrypoints=websecure"
+      - "traefik.http.routers.checklist.tls.certresolver=cloudflare"
+      - "traefik.http.services.checklist.loadbalancer.server.port=8000"
+
+networks:
+  infraestructura_app-network:
+    external: true
