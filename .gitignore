@@ -1,4 +1,6 @@
 /__pycache__
+/data
+/uploads
 credentials.json
 .env
 *.pyc
