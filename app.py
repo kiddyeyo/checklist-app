@@ -96,6 +96,22 @@ def save_row_to_sheet(values: list[str], sheet_name: str):
         body={"values": [values]}
     ).execute()
 
+
+async def save_uploaded_images(request: Request, photos: list[UploadFile] | None) -> list[str]:
+    """Save uploaded images and return their accessible URLs."""
+    urls: list[str] = []
+    if photos:
+        for up in photos:
+            if up.content_type.startswith("image/"):
+                ext = os.path.splitext(up.filename)[1]
+                fname = f"{uuid.uuid4()}{ext}"
+                dest = os.path.join(UPLOAD_DIR, fname)
+                with open(dest, "wb") as out:
+                    out.write(await up.read())
+                base = str(request.base_url).rstrip("/")
+                urls.append(f"{base}/uploads/{fname}")
+    return urls
+
 # 1) Menú principal
 @app.get("/")
 async def menu(request: Request):
@@ -126,17 +142,8 @@ async def submit_precheck(request: Request, photos: list[UploadFile] = File(None
         row.append(form.get(key))
     row.append(form.get("comments", ""))
 
-    # guardar fotos
-    urls = []
-    if photos:
-        for up in photos:
-            if up.content_type.startswith("image/"):
-                ext = os.path.splitext(up.filename)[1]
-                fname = f"{uuid.uuid4()}{ext}"
-                dest = os.path.join(UPLOAD_DIR, fname)
-                with open(dest, "wb") as f: f.write(await up.read())
-                base = str(request.base_url).rstrip("/")
-                urls.append(f"{base}/uploads/{fname}")
+    # Fotos de evidencia
+    urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Precheck")
@@ -177,18 +184,8 @@ async def submit_supervisor(request: Request, photos: list[UploadFile] = File(No
     # Comentarios
     row.append(form.get("comments", ""))
 
-    # Fotos
-    urls = []
-    if photos:
-        for upload in photos:
-            if upload.content_type.startswith("image/"):
-                ext = os.path.splitext(upload.filename)[1]
-                filename = f"{uuid.uuid4()}{ext}"
-                dest = os.path.join(UPLOAD_DIR, filename)
-                with open(dest, "wb") as out:
-                    out.write(await upload.read())
-                base = str(request.base_url).rstrip("/")
-                urls.append(f"{base}/uploads/{filename}")
+    # Fotos de evidencia
+    urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Supervisor")
@@ -234,17 +231,7 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
     row.append(form.get("comments", ""))
 
     # Fotos de evidencia
-    urls = []
-    if photos:
-        for up in photos:
-            if up.content_type.startswith("image/"):
-                ext = os.path.splitext(up.filename)[1]
-                fname = f"{uuid.uuid4()}{ext}"
-                dest = os.path.join(UPLOAD_DIR, fname)
-                with open(dest, "wb") as out:
-                    out.write(await up.read())
-                base = str(request.base_url).rstrip("/")
-                urls.append(f"{base}/uploads/{fname}")
+    urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Mantenimiento")
