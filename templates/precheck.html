@@ -1,18 +1,11 @@
-<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Precheck de Camión</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 p-6">
+{% extends 'base.html' %}
+
+{% block title %}Precheck de Camión{% endblock %}
+
+{% block content %}
   <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
     <h1 class="text-2xl font-bold mb-4">Checklist Preoperativo</h1>
     <form action="/submit/precheck" method="post" enctype="multipart/form-data">
-
-      <!-- Selecciones básicas -->
       <div class="grid gap-4">
         <div>
           <label class="block font-medium">Operador:</label>
@@ -42,8 +35,6 @@
           </select>
         </div>
       </div>
-
-      <!-- Preguntas dinámicas -->
       <div class="grid gap-4">
         {% for key, question, options in items %}
         <div>
@@ -57,28 +48,17 @@
         </div>
         {% endfor %}
       </div>
-
-      <!-- Comentarios adicionales -->
       <div>
         <label class="block font-medium">Comentarios adicionales:</label>
-        <textarea name="comments" rows="4"
-                  class="w-full border p-2 rounded"
-                  placeholder="Escribe aquí tus comentarios…"></textarea>
+        <textarea name="comments" rows="4" class="w-full border p-2 rounded" placeholder="Escribe aquí tus comentarios…"></textarea>
       </div>
-
-      <!-- Fotos de evidencia -->
       <div>
         <label class="block font-medium mb-1">Fotos de evidencia (opcional):</label>
-        <input type="file" name="photos" accept="image/*" multiple
-               class="w-full border p-2 rounded"/>
+        <input type="file" name="photos" accept="image/*" multiple class="w-full border p-2 rounded"/>
       </div>
-
-      <button type="submit"
-              class="w-full bg-blue-600 text-white p-3 rounded">
+      <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded">
         Enviar Checklist
       </button>
     </form>
   </div>
-</body>
-</html>
-
+{% endblock %}

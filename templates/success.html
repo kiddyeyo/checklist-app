@@ -1,26 +1,18 @@
-<!-- templates/success.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Éxito</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet" />
-</head>
-<body class="bg-green-50 flex items-center justify-center min-h-screen p-4">
-  <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
-    <!-- Ícono de éxito -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12l2 2l4 -4m5 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
+{% extends 'base.html' %}
 
-    <h1 class="text-2xl font-semibold mb-2">¡Formulario enviado con éxito!</h1>
-    <p class="text-gray-700 mb-6">Tu respuesta ha sido registrada correctamente.</p>
+{% block title %}Éxito{% endblock %}
 
-    <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg">
-      Volver al menú de formularios
-    </a>
+{% block content %}
+  <div class="bg-green-50 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4 -4m5 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h1 class="text-2xl font-semibold mb-2">¡Formulario enviado con éxito!</h1>
+      <p class="text-gray-700 mb-6">Tu respuesta ha sido registrada correctamente.</p>
+      <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg">
+        Volver al menú de formularios
+      </a>
+    </div>
   </div>
-</body>
-</html>
+{% endblock %}

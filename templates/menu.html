@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Menú Checklist</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 p-6">
+{% extends 'base.html' %}
+
+{% block title %}Menú Checklist{% endblock %}
+
+{% block content %}
   <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
     <h1 class="text-2xl font-bold mb-4">Selecciona un formulario</h1>
     <div class="space-y-3">
@@ -15,5 +11,4 @@
       <a href="/mantenimiento" class="block text-center bg-yellow-600 text-white p-3 rounded">Mantenimiento Mecánico</a>
     </div>
   </div>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6" style="font-family: 'Inter', sans-serif;">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold mb-2">Checklist App</h1>
+    <a href="/" class="text-blue-600 underline">Menú principal</a>
+  </header>
+  {% block content %}{% endblock %}
+</body>
+</html>
