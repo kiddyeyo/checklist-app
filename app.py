@@ -88,13 +88,21 @@ MAINTENANCE_ITEMS = [
     ("limpieza_radiador",   "Limpieza de radiador/intercooler",            ["Completo", "Pendiente"])
 ]
 
-def save_row_to_sheet(values: list[str], sheet_name: str):
-    sheet_service.values().append(
-        spreadsheetId=SPREADSHEET_ID,
-        range=f"{sheet_name}!A1",
-        valueInputOption="USER_ENTERED",
-        body={"values": [values]}
-    ).execute()
+def save_row_to_sheet(values: list[str], sheet_name: str) -> str | None:
+    """Append a row to the given sheet.
+
+    Returns ``None`` on success or a string with an error message on failure."""
+    try:
+        sheet_service.values().append(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{sheet_name}!A1",
+            valueInputOption="USER_ENTERED",
+            body={"values": [values]}
+        ).execute()
+        return None
+    except Exception:
+        logger.exception("Failed to save row to sheet %s", sheet_name)
+        return "No se pudo registrar la respuesta. Intenta nuevamente."
 
 # 1) Menú principal
 @app.get("/")
@@ -139,7 +147,12 @@ async def submit_precheck(request: Request, photos: list[UploadFile] = File(None
                 urls.append(f"{base}/uploads/{fname}")
     row.append(" | ".join(urls))
 
-    save_row_to_sheet(row, "Precheck")
+    error_message = save_row_to_sheet(row, "Precheck")
+    if error_message:
+        return templates.TemplateResponse(
+            "error.html",
+            {"request": request, "message": error_message},
+        )
     return templates.TemplateResponse("success.html", {"request": request})
 
 
@@ -191,7 +204,12 @@ async def submit_supervisor(request: Request, photos: list[UploadFile] = File(No
                 urls.append(f"{base}/uploads/{filename}")
     row.append(" | ".join(urls))
 
-    save_row_to_sheet(row, "Supervisor")
+    error_message = save_row_to_sheet(row, "Supervisor")
+    if error_message:
+        return templates.TemplateResponse(
+            "error.html",
+            {"request": request, "message": error_message},
+        )
     return templates.TemplateResponse("success.html", {"request": request})
 
 # 4) MANTENIMIENTO
@@ -247,7 +265,12 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
                 urls.append(f"{base}/uploads/{fname}")
     row.append(" | ".join(urls))
 
-    save_row_to_sheet(row, "Mantenimiento")
+    error_message = save_row_to_sheet(row, "Mantenimiento")
+    if error_message:
+        return templates.TemplateResponse(
+            "error.html",
+            {"request": request, "message": error_message},
+        )
     return templates.TemplateResponse("success.html", {"request": request})
 
 

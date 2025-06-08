@@ -1,0 +1,23 @@
+<!-- templates/error.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Error</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-red-50 flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
+    <!-- Ícono de error -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.054 0 1.658-1.14 1.105-2.055L13.105 4.055c-.527-.864-1.683-.864-2.21 0L3.977 16.945c-.553.915.051 2.055 1.105 2.055z" />
+    </svg>
+    <h1 class="text-2xl font-semibold mb-2">Ocurrió un error</h1>
+    <p class="text-gray-700 mb-6">{{ message }}</p>
+    <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg">
+      Volver al menú de formularios
+    </a>
+  </div>
+</body>
+</html>
