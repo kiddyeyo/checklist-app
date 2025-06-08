@@ -16,8 +16,10 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.checklist.rule=Host(`checklist.sintaq.net`)"
       - "traefik.http.routers.checklist.entrypoints=websecure"
+      - "traefik.http.routers.checklist.tls=true"
       - "traefik.http.routers.checklist.tls.certresolver=cloudflare"
       - "traefik.http.services.checklist.loadbalancer.server.port=8000"
+      - "traefik.http.routers.checklist.middlewares=authentik@file"
 networks:
   infraestructura_app-network:
     external: true

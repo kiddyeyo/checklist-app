@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mantenimiento Mecánico</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Registro de Mantenimiento</h1>
+    <form action="/submit/mantenimiento" method="post" enctype="multipart/form-data" class="space-y-6">
+
+      <!-- Tipo de mantenimiento -->
+      <div>
+        <label class="block font-medium">Tipo de mantenimiento:</label>
+        <select name="type" required class="w-full border p-2 rounded">
+          <option value="" disabled selected>Selecciona tipo</option>
+          <option value="Preventivo">Preventivo</option>
+          <option value="Correctivo">Correctivo</option>
+          <option value="Inspección general">Inspección general</option>
+        </select>
+      </div>
+
+      <!-- Mecánico -->
+      <div>
+        <label class="block font-medium">Mecánico:</label>
+        <select name="mechanic" required class="w-full border p-2 rounded">
+          <option value="" disabled selected>Selecciona tu nombre</option>
+          {% for mech in mechanics %}
+          <option value="{{ mech }}">{{ mech }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Unidad -->
+      <div>
+        <label class="block font-medium">Unidad:</label>
+        <select name="unit" required class="w-full border p-2 rounded">
+          <option value="" disabled selected>Selecciona unidad</option>
+          {% for u in units %}
+          <option value="{{ u }}">{{ u }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Horas motor actuales -->
+      <div>
+        <label class="block font-medium">Horas motor actuales:</label>
+        <input type="number" name="hr_actual" step="0.1" required
+               class="w-full border p-2 rounded"
+               placeholder="Ej. 1234.5" />
+      </div>
+
+      <!-- Próximo mantenimiento: km y fecha -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-medium">Proximo mantenimiento(Hrs/Motor):</label>
+          <input type="number" name="next_km" required
+                 class="w-full border p-2 rounded"
+                 placeholder="Ej. 150000" />
+        </div>
+        <div>
+          <label class="block font-medium">Fecha próxima:</label>
+          <input type="date" name="next_date"
+                 class="w-full border p-2 rounded" />
+        </div>
+      </div>
+
+      <!-- Checklist dinámico -->
+      <div class="grid gap-4">
+        {% for key, question, options in items %}
+        <div>
+          <label class="block font-medium mb-1">{{ question }}</label>
+          <select name="{{ key }}" required class="w-full border p-2 rounded">
+            <option value="" disabled selected>Selecciona</option>
+            {% for opt in options %}
+            <option value="{{ opt }}">{{ opt }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Piezas reemplazadas -->
+      <div>
+        <label class="block font-medium">Piezas reemplazadas:</label>
+        <input type="text" name="parts" class="w-full border p-2 rounded"
+               placeholder="Ej. Filtro aceite, Pastillas de freno" />
+      </div>
+
+      <!-- Observaciones adicionales -->
+      <div>
+        <label class="block font-medium">Observaciones:</label>
+        <textarea name="comments" rows="3" class="w-full border p-2 rounded"
+                  placeholder="Notas…" ></textarea>
+      </div>
+
+      <!-- Fotos de evidencia -->
+      <div>
+        <label class="block font-medium">Fotos (opcional):</label>
+        <input type="file" name="photos" accept="image/*" multiple
+               class="w-full border p-2 rounded" />
+      </div>
+
+      <button type="submit"
+              class="w-full bg-yellow-600 text-white p-3 rounded">
+        Enviar Mantenimiento
+      </button>
+    </form>
+  </div>
+</body>
+</html>
+

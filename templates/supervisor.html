@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Supervisor - Checklist</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Revisión Supervisor</h1>
+    <form action="/submit/supervisor" method="post" enctype="multipart/form-data" class="space-y-6">
+
+      <!-- Supervisor -->
+      <div>
+        <label class="block font-medium">Supervisor:</label>
+        <select name="supervisor" required class="w-full border p-2 rounded">
+          <option value="" disabled selected>Selecciona tu nombre</option>
+          {% for sup in supervisors %}
+            <option value="{{ sup }}">{{ sup }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Operador chequeado -->
+      <div>
+        <label class="block font-medium">Operador:</label>
+        <select name="operator" required class="w-full border p-2 rounded">
+          <option value="" disabled selected>Selecciona operador</option>
+          {% for op in operators %}
+          <option value="{{ op }}">{{ op }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Unidad -->
+      <div>
+        <label class="block font-medium">Unidad:</label>
+        <select name="unit" required class="w-full border p-2 rounded">
+          <option value="" disabled selected>Selecciona unidad</option>
+          {% for u in units %}
+          <option value="{{ u }}">{{ u }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Preguntas dinámicas -->
+      <div class="grid gap-4">
+        {% for key, question, options in items %}
+        <div>
+          <label class="block font-medium mb-1">{{ question }}</label>
+          <select name="{{ key }}" required class="w-full border p-2 rounded">
+            <option value="" disabled selected>Selecciona</option>
+            {% for opt in options %}
+            <option value="{{ opt }}">{{ opt }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Comentarios adicionales -->
+      <div>
+        <label class="block font-medium">Comentarios adicionales:</label>
+        <textarea name="comments" rows="4" class="w-full border p-2 rounded"
+                  placeholder="Observaciones del supervisor…"></textarea>
+      </div>
+
+      <!-- Fotos de evidencia -->
+      <div>
+        <label class="block font-medium">Fotos (opcional):</label>
+        <input type="file" name="photos" accept="image/*" multiple
+               class="w-full border p-2 rounded"/>
+      </div>
+
+      <button type="submit"
+              class="w-full bg-green-600 text-white p-3 rounded">
+        Enviar Revisión
+      </button>
+    </form>
+  </div>
+</body>
+</html>

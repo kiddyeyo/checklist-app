@@ -1,4 +1,3 @@
-# app.py
 import os
 import uuid
 from datetime import datetime
@@ -10,40 +9,37 @@ from fastapi.staticfiles import StaticFiles
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-# Inicialización de FastAPI y Jinja2
+# Inicialización
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# Carpeta para subir y servir imágenes
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR  = os.path.dirname(__file__)
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-# Carga de listas desde /data
+# Carga de listas
 def load_list(filename):
     path = os.path.join(BASE_DIR, "data", filename)
     if not os.path.exists(path):
         return []
     with open(path, encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip()]
+        return [l.strip() for l in f if l.strip()]
 
 OPERATORS = load_list("operators.txt")
 UNITS     = load_list("units.txt")
 ROUTES    = load_list("routes.txt")
+SUPERVISORS = load_list("supervisors.txt")
+MECHANICS   = load_list("mechanics.txt")
 
-# Configuración de Google Sheets API
+# Google Sheets API
 SCOPES         = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_ID = os.getenv("SHEETS_SPREADSHEET_ID")
 CREDS_FILE     = os.getenv("GOOGLE_SHEETS_CREDENTIALS_JSON")
-
-creds = service_account.Credentials.from_service_account_file(
-    CREDS_FILE,
-    scopes=SCOPES
-)
+creds = service_account.Credentials.from_service_account_file(CREDS_FILE, scopes=SCOPES)
 sheet_service = build("sheets", "v4", credentials=creds).spreadsheets()
 
-# Ítems del checklist: (clave, pregunta, opciones)
+# Ítems compartidos (puedes adaptarlos por formulario)
 CHECK_ITEMS = [
     ("lubricante_anticongelante", "Revisa si los niveles de lubricante y anticongelante están dentro del rango:", ["Correcto", "Bajo", "Alto"]),
     ("fugas",                     "Abre la compuerta y checa filtraciones de combustible/anticongelante/líquido de dirección:", ["Sin fugas", "Con fugas"]),
@@ -62,9 +58,46 @@ CHECK_ITEMS = [
     ("luces",                     "Chequea luces, direccionales e intermitentes:", ["Todas operan", "Alguna falla"])
 ]
 
+# Preguntas para Supervisor
+SUPERVISOR_ITEMS = [
+    ("presencia",   "¿El operador se presentó a tiempo?", ["Sí", "No"]),
+    ("uniforme",    "¿Porta el uniforme o indumentaria requerida?", ["Sí", "No"]),
+    ("sobriedad",   "¿Muestra actitud sobria y apta para conducir?", ["Sí", "No"]),
+    ("proteccion",  "¿Porta equipo de protección personal?", ["Sí", "No"]),
+    ("licencia",    "¿Licencia de conducir vigente?", ["Sí", "No"]),
+    ("credencial",  "¿Porta credencial de la empresa?", ["Sí", "No"]),
+    ("condiciones", "¿El operador está en condiciones físicas óptimas?", ["Sí", "No"]),
+]
+
+# Ítems para Mantenimiento
+MAINTENANCE_ITEMS = [
+    ("cambio_aceite",      "Cambio de aceite",                            ["Sí", "No"]),
+    ("filtro_aire",        "Reemplazo de filtro de aire",                 ["Sí", "No"]),
+    ("revision_frenos",     "Revisión de frenos",                          ["Ok", "Fallas detectadas"]),
+    ("rotacion_llantas",   "Rotación de llantas",                         ["Sí", "No"]),
+    ("inspeccion_correas",  "Inspección de correas",                       ["Ok", "Reemplazar"]),
+    ("revision_niveles",    "Revisión de nivel de fluidos",                ["Ok", "Bajo", "Alto"]),
+    ("ajuste_tornilleria",  "Ajuste de tornillería crítica",               ["Completo", "Pendiente"]),
+    ("limpieza_radiador",   "Limpieza de radiador/intercooler",            ["Completo", "Pendiente"])
+]
+
+def save_row_to_sheet(values: list[str], sheet_name: str):
+    sheet_service.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f"{sheet_name}!A1",
+        valueInputOption="USER_ENTERED",
+        body={"values": [values]}
+    ).execute()
+
+# 1) Menú principal
 @app.get("/")
-async def form(request: Request):
-    return templates.TemplateResponse("index.html", {
+async def menu(request: Request):
+    return templates.TemplateResponse("menu.html", {"request": request})
+
+# 2) PRECHECK (operador)
+@app.get("/precheck")
+async def precheck_form(request: Request):
+    return templates.TemplateResponse("precheck.html", {
         "request": request,
         "operators": OPERATORS,
         "units": UNITS,
@@ -72,31 +105,73 @@ async def form(request: Request):
         "items": CHECK_ITEMS
     })
 
-@app.post("/submit")
-async def submit(request: Request, photos: list[UploadFile] = File(None)):
+@app.post("/submit/precheck")
+async def submit_precheck(request: Request, photos: list[UploadFile] = File(None)):
     form = await request.form()
-    # Fecha y hora en zona America/Hermosillo
+    now = datetime.now(ZoneInfo("America/Hermosillo"))
+    date_str, time_str = now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
+
+    row = [
+        date_str, time_str,
+        form.get("operator"), form.get("unit"), form.get("route")
+    ]
+    for key, _, _ in CHECK_ITEMS:
+        row.append(form.get(key))
+    row.append(form.get("comments", ""))
+
+    # guardar fotos
+    urls = []
+    if photos:
+        for up in photos:
+            if up.content_type.startswith("image/"):
+                ext = os.path.splitext(up.filename)[1]
+                fname = f"{uuid.uuid4()}{ext}"
+                dest = os.path.join(UPLOAD_DIR, fname)
+                with open(dest, "wb") as f: f.write(await up.read())
+                base = str(request.base_url).rstrip("/")
+                urls.append(f"{base}/uploads/{fname}")
+    row.append(" | ".join(urls))
+
+    save_row_to_sheet(row, "Precheck")
+    return RedirectResponse("/precheck", status_code=303)
+
+
+# Supervisor: formulario GET
+@app.get("/supervisor")
+async def supervisor_form(request: Request):
+    return templates.TemplateResponse("supervisor.html", {
+        "request": request,
+        "supervisors": SUPERVISORS,
+        "operators": OPERATORS,
+        "units": UNITS,
+        "items": SUPERVISOR_ITEMS
+    })
+
+# Supervisor: procesamiento POST
+@app.post("/submit/supervisor")
+async def submit_supervisor(request: Request, photos: list[UploadFile] = File(None)):
+    form = await request.form()
     now = datetime.now(ZoneInfo("America/Hermosillo"))
     date_str = now.strftime("%Y-%m-%d")
     time_str = now.strftime("%H:%M:%S")
 
-    operator = form.get("operator")
-    unit     = form.get("unit")
-    route    = form.get("route")
-    comments = form.get("comments", "")
+    row = [
+        date_str,
+        time_str,
+        form.get("supervisor"),
+        form.get("operator"),
+        form.get("unit")
+    ]
 
-    # Construcción de la fila: fecha, hora, operador, unidad, ruta
-    row = [date_str, time_str, operator, unit, route]
-
-    # Respuestas a ítems
-    for key, _, _ in CHECK_ITEMS:
+    # Añade respuestas dinámicas
+    for key, _, _ in SUPERVISOR_ITEMS:
         row.append(form.get(key))
 
-    # Comentarios adicionales
-    row.append(comments)
+    # Comentarios
+    row.append(form.get("comments", ""))
 
-    # Guarda las fotos y genera URLs
-    file_urls = []
+    # Fotos
+    urls = []
     if photos:
         for upload in photos:
             if upload.content_type.startswith("image/"):
@@ -106,20 +181,64 @@ async def submit(request: Request, photos: list[UploadFile] = File(None)):
                 with open(dest, "wb") as out:
                     out.write(await upload.read())
                 base = str(request.base_url).rstrip("/")
-                file_urls.append(f"{base}/uploads/{filename}")
+                urls.append(f"{base}/uploads/{filename}")
+    row.append(" | ".join(urls))
 
-    # Añade URLs de fotos al final
-    row.append(" | ".join(file_urls))
+# 4) MANTENIMIENTO
+@app.get("/mantenimiento")
+async def mantenimiento_form(request: Request):
+    return templates.TemplateResponse("mantenimiento.html", {
+        "request": request,
+        "operators": OPERATORS,
+        "units": UNITS,
+        "mechanics": MECHANICS,
+        "items": MAINTENANCE_ITEMS
+    })
 
-    # Envía fila a Google Sheets en pestaña ‘Checklist’
-    body = {"values": [row]}
-    sheet_service.values().append(
-        spreadsheetId=SPREADSHEET_ID,
-        range="Checklist!A1",
-        valueInputOption="USER_ENTERED",
-        body=body
-    ).execute()
+# 4b) MANTENIMIENTO - procesamiento POST
+@app.post("/submit/mantenimiento")
+async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File(None)):
+    form = await request.form()
+    now = datetime.now(ZoneInfo("America/Hermosillo"))
+    date_str = now.strftime("%Y-%m-%d")
+    time_str = now.strftime("%H:%M:%S")
 
-    return RedirectResponse("/", status_code=303)
+    # Fila inicial
+    row = [
+        date_str,
+        time_str,
+        form.get("type"),           # Tipo de mantenimiento
+        form.get("mechanic"),       # Mecánico
+        form.get("unit"),           # Unidad
+        form.get("hr_actual"),      # Horas motor actuales
+        form.get("next_km"),        # Km próximo
+        form.get("next_date", "")   # Fecha próxima (si se ingresó)
+    ]
+
+    # Respuestas dinámicas
+    for key, _, _ in MAINTENANCE_ITEMS:
+        row.append(form.get(key))
+    
+    # Piezas reemplazadas y observaciones
+    row.append(form.get("parts", ""))
+    row.append(form.get("comments", ""))
+
+    # Fotos de evidencia
+    urls = []
+    if photos:
+        for up in photos:
+            if up.content_type.startswith("image/"):
+                ext = os.path.splitext(up.filename)[1]
+                fname = f"{uuid.uuid4()}{ext}"
+                dest = os.path.join(UPLOAD_DIR, fname)
+                with open(dest, "wb") as out:
+                    out.write(await up.read())
+                base = str(request.base_url).rstrip("/")
+                urls.append(f"{base}/uploads/{fname}")
+    row.append(" | ".join(urls))
+
+    save_row_to_sheet(row, "Mantenimiento")
+    return RedirectResponse("/mantenimiento", status_code=303)
+
 
 
