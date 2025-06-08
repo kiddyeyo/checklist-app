@@ -116,6 +116,11 @@ async def save_uploaded_images(request: Request, photos: list[UploadFile] | None
 async def menu(request: Request):
     return templates.TemplateResponse("menu.html", {"request": request})
 
+# Página de confirmación (GET)
+@app.get("/success")
+async def success(request: Request):
+    return templates.TemplateResponse("success.html", {"request": request})
+
 # 2) PRECHECK (operador)
 @app.get("/precheck")
 async def precheck_form(request: Request):
@@ -145,7 +150,7 @@ async def submit_precheck(request: Request, photos: list[UploadFile] = File(None
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Precheck")
-    return templates.TemplateResponse("success.html", {"request": request})
+    return RedirectResponse("/success")
 
 
 # Supervisor: formulario GET
@@ -186,7 +191,7 @@ async def submit_supervisor(request: Request, photos: list[UploadFile] = File(No
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Supervisor")
-    return templates.TemplateResponse("success.html", {"request": request})
+    return RedirectResponse("/success")
 
 # 4) MANTENIMIENTO
 @app.get("/mantenimiento")
@@ -231,7 +236,7 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Mantenimiento")
-    return templates.TemplateResponse("success.html", {"request": request})
+    return RedirectResponse("/success")
 
 
 
