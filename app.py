@@ -133,7 +133,7 @@ async def submit_precheck(request: Request, photos: list[UploadFile] = File(None
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Precheck")
-    return RedirectResponse("/precheck", status_code=303)
+    return templates.TemplateResponse("success.html", {"request": request})
 
 
 # Supervisor: formulario GET
@@ -183,6 +183,9 @@ async def submit_supervisor(request: Request, photos: list[UploadFile] = File(No
                 base = str(request.base_url).rstrip("/")
                 urls.append(f"{base}/uploads/{filename}")
     row.append(" | ".join(urls))
+
+    save_row_to_sheet(row, "Supervisor")
+    return templates.TemplateResponse("success.html", {"request": request})
 
 # 4) MANTENIMIENTO
 @app.get("/mantenimiento")
@@ -238,7 +241,7 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
     row.append(" | ".join(urls))
 
     save_row_to_sheet(row, "Mantenimiento")
-    return RedirectResponse("/mantenimiento", status_code=303)
+    return templates.TemplateResponse("success.html", {"request": request})
 
 
 
