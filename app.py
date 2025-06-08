@@ -157,7 +157,7 @@ async def submit_precheck(request: Request, photos: list[UploadFile] = File(None
 
     if not save_row_to_sheet(row, "Precheck"):
         raise HTTPException(status_code=500, detail="Error saving data")
-    return RedirectResponse("/success")
+    return RedirectResponse("/success", status_code=303)
 
 
 # Supervisor: formulario GET
@@ -199,7 +199,7 @@ async def submit_supervisor(request: Request, photos: list[UploadFile] = File(No
 
     if not save_row_to_sheet(row, "Supervisor"):
         raise HTTPException(status_code=500, detail="Error saving data")
-    return RedirectResponse("/success")
+    return RedirectResponse("/success", status_code=303)
 
 # 4) MANTENIMIENTO
 @app.get("/mantenimiento")
@@ -245,7 +245,7 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
 
     if not save_row_to_sheet(row, "Mantenimiento"):
         raise HTTPException(status_code=500, detail="Error saving data")
-    return RedirectResponse("/success")
+    return RedirectResponse("/success", status_code=303)
 
 
 
