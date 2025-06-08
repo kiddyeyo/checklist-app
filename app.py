@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from fastapi import FastAPI, Request, UploadFile, File
+from fastapi import FastAPI, Request, UploadFile, File, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -88,13 +88,19 @@ MAINTENANCE_ITEMS = [
     ("limpieza_radiador",   "Limpieza de radiador/intercooler",            ["Completo", "Pendiente"])
 ]
 
-def save_row_to_sheet(values: list[str], sheet_name: str):
-    sheet_service.values().append(
-        spreadsheetId=SPREADSHEET_ID,
-        range=f"{sheet_name}!A1",
-        valueInputOption="USER_ENTERED",
-        body={"values": [values]}
-    ).execute()
+def save_row_to_sheet(values: list[str], sheet_name: str) -> bool:
+    """Append a row to the given sheet and return True on success."""
+    try:
+        sheet_service.values().append(
+            spreadsheetId=SPREADSHEET_ID,
+            range=f"{sheet_name}!A1",
+            valueInputOption="USER_ENTERED",
+            body={"values": [values]}
+        ).execute()
+        return True
+    except Exception:
+        logger.exception("Failed to append row to sheet '%s'", sheet_name)
+        return False
 
 async def save_uploaded_images(request: Request, photos: list[UploadFile] | None) -> list[str]:
     """Save uploaded images and return their accessible URLs."""
@@ -149,7 +155,8 @@ async def submit_precheck(request: Request, photos: list[UploadFile] = File(None
     urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
-    save_row_to_sheet(row, "Precheck")
+    if not save_row_to_sheet(row, "Precheck"):
+        raise HTTPException(status_code=500, detail="Error saving data")
     return RedirectResponse("/success")
 
 
@@ -190,7 +197,8 @@ async def submit_supervisor(request: Request, photos: list[UploadFile] = File(No
     urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
-    save_row_to_sheet(row, "Supervisor")
+    if not save_row_to_sheet(row, "Supervisor"):
+        raise HTTPException(status_code=500, detail="Error saving data")
     return RedirectResponse("/success")
 
 # 4) MANTENIMIENTO
@@ -235,7 +243,8 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
     urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
-    save_row_to_sheet(row, "Mantenimiento")
+    if not save_row_to_sheet(row, "Mantenimiento"):
+        raise HTTPException(status_code=500, detail="Error saving data")
     return RedirectResponse("/success")
 
 
