@@ -240,6 +240,9 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
     urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
+    save_row_to_sheet(row, "Mantenimiento")
+    return templates.TemplateResponse("success.html", {"request": request})
+
     # --- NUEVO: Página de Videos ---
 @app.get("/videos")
 async def videos_page(request: Request):
@@ -252,6 +255,3 @@ async def videos_page(request: Request):
         "request": request,
         "videos": video_files
     })
-
-    save_row_to_sheet(row, "Mantenimiento")
-    return templates.TemplateResponse("success.html", {"request": request})
