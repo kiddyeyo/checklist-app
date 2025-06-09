@@ -8,13 +8,13 @@
 </head>
 <body class="bg-gray-100 p-6">
   <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Revisión Supervisor</h1>
-    <form action="/submit/supervisor" method="post" enctype="multipart/form-data" class="space-y-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Revisión Supervisor</h1>
+    <form action="/submit/supervisor" method="post" enctype="multipart/form-data" class="space-y-6 text-lg">
 
       <!-- Supervisor -->
       <div>
-        <label class="block font-medium">Supervisor:</label>
-        <select name="supervisor" required class="w-full border p-2 rounded">
+        <label class="block font-medium text-lg">Supervisor:</label>
+        <select name="supervisor" required class="w-full border p-2 rounded text-lg">
           <option value="" disabled selected>Selecciona tu nombre</option>
           {% for sup in supervisors %}
             <option value="{{ sup }}">{{ sup }}</option>
@@ -24,8 +24,8 @@
 
       <!-- Operador chequeado -->
       <div>
-        <label class="block font-medium">Operador:</label>
-        <select name="operator" required class="w-full border p-2 rounded">
+        <label class="block font-medium text-lg">Operador:</label>
+        <select name="operator" required class="w-full border p-2 rounded text-lg">
           <option value="" disabled selected>Selecciona operador</option>
           {% for op in operators %}
           <option value="{{ op }}">{{ op }}</option>
@@ -35,8 +35,8 @@
 
       <!-- Unidad -->
       <div>
-        <label class="block font-medium">Unidad:</label>
-        <select name="unit" required class="w-full border p-2 rounded">
+        <label class="block font-medium text-lg">Unidad:</label>
+        <select name="unit" required class="w-full border p-2 rounded text-lg">
           <option value="" disabled selected>Selecciona unidad</option>
           {% for u in units %}
           <option value="{{ u }}">{{ u }}</option>
@@ -45,11 +45,11 @@
       </div>
 
       <!-- Preguntas dinámicas -->
-      <div class="grid gap-4">
+      <div class="grid gap-6">
         {% for key, question, options in items %}
         <div>
-          <label class="block font-medium mb-1">{{ question }}</label>
-          <select name="{{ key }}" required class="w-full border p-2 rounded">
+          <label class="block font-medium mb-1 text-lg">{{ question }}</label>
+          <select name="{{ key }}" required class="w-full border p-2 rounded text-lg">
             <option value="" disabled selected>Selecciona</option>
             {% for opt in options %}
             <option value="{{ opt }}">{{ opt }}</option>
@@ -61,16 +61,16 @@
 
       <!-- Comentarios adicionales -->
       <div>
-        <label class="block font-medium">Comentarios adicionales:</label>
-        <textarea name="comments" rows="4" class="w-full border p-2 rounded"
+        <label class="block font-medium text-lg">Comentarios adicionales:</label>
+        <textarea name="comments" rows="4" class="w-full border p-2 rounded text-lg"
                   placeholder="Observaciones del supervisor…"></textarea>
       </div>
 
       <!-- Fotos de evidencia -->
       <div>
-        <label class="block font-medium">Fotos (opcional):</label>
+        <label class="block font-medium text-lg">Fotos (opcional):</label>
         <input type="file" name="photos" accept="image/*" multiple
-               class="w-full border p-2 rounded"/>
+               class="w-full border p-2 rounded text-lg"/>
       </div>
 
       <button type="submit"

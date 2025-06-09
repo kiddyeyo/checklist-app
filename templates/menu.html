@@ -7,14 +7,20 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet" />
 </head>
 <body class="bg-gray-100 p-6">
-  <div class="max-w-xl mx-auto bg-white p-8 rounded shadow">
-    <h1 class="text-3xl font-bold mb-6 text-center">Selecciona un formulario</h1>
-    <div class="flex flex-col items-center space-y-4">
-      <a href="/precheck" class="w-full text-center bg-blue-600 text-white py-4 rounded-lg text-xl">Precheck Operador</a>
-      <a href="/supervisor" class="w-full text-center bg-green-600 text-white py-4 rounded-lg text-xl">Revisión Supervisor</a>
-      <a href="/mantenimiento" class="w-full text-center bg-yellow-600 text-white py-4 rounded-lg text-xl">Mantenimiento Mecánico</a>
-      <!-- Nuevo botón para Videos -->
-      <a href="/videos" class="w-full text-center bg-purple-600 text-white py-4 rounded-lg text-xl">Videos</a>
+  <div class="max-w-xl mx-auto space-y-8">
+    <div class="bg-white p-8 rounded shadow">
+      <h1 class="text-3xl font-bold mb-4 text-center">Selecciona el formulario</h1>
+      <div class="flex flex-col items-center space-y-4">
+        <a href="/precheck" class="w-full text-center bg-blue-600 text-white py-4 rounded-lg text-xl">Precheck Operador</a>
+        <a href="/supervisor" class="w-full text-center bg-green-600 text-white py-4 rounded-lg text-xl">Revisión Supervisor</a>
+        <a href="/mantenimiento" class="w-full text-center bg-yellow-600 text-white py-4 rounded-lg text-xl">Mantenimiento Mecánico</a>
+      </div>
+    </div>
+    <div class="bg-white p-8 rounded shadow">
+      <h2 class="text-3xl font-bold mb-4 text-center">Videos de capacitación</h2>
+      <div class="flex justify-center">
+        <a href="/videos" class="bg-purple-600 text-white py-4 px-6 rounded-lg text-xl">Videos</a>
+      </div>
     </div>
   </div>
 </body>

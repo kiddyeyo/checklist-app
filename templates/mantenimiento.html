@@ -8,13 +8,13 @@
 </head>
 <body class="bg-gray-100 p-6">
   <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Registro de Mantenimiento</h1>
-    <form action="/submit/mantenimiento" method="post" enctype="multipart/form-data" class="space-y-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Registro de Mantenimiento</h1>
+    <form action="/submit/mantenimiento" method="post" enctype="multipart/form-data" class="space-y-6 text-lg">
 
       <!-- Tipo de mantenimiento -->
       <div>
-        <label class="block font-medium">Tipo de mantenimiento:</label>
-        <select name="type" required class="w-full border p-2 rounded">
+        <label class="block font-medium text-lg">Tipo de mantenimiento:</label>
+        <select name="type" required class="w-full border p-2 rounded text-lg">
           <option value="" disabled selected>Selecciona tipo</option>
           <option value="Preventivo">Preventivo</option>
           <option value="Correctivo">Correctivo</option>
@@ -24,8 +24,8 @@
 
       <!-- Mecánico -->
       <div>
-        <label class="block font-medium">Mecánico:</label>
-        <select name="mechanic" required class="w-full border p-2 rounded">
+        <label class="block font-medium text-lg">Mecánico:</label>
+        <select name="mechanic" required class="w-full border p-2 rounded text-lg">
           <option value="" disabled selected>Selecciona tu nombre</option>
           {% for mech in mechanics %}
           <option value="{{ mech }}">{{ mech }}</option>
@@ -35,8 +35,8 @@
 
       <!-- Unidad -->
       <div>
-        <label class="block font-medium">Unidad:</label>
-        <select name="unit" required class="w-full border p-2 rounded">
+        <label class="block font-medium text-lg">Unidad:</label>
+        <select name="unit" required class="w-full border p-2 rounded text-lg">
           <option value="" disabled selected>Selecciona unidad</option>
           {% for u in units %}
           <option value="{{ u }}">{{ u }}</option>
@@ -46,33 +46,33 @@
 
       <!-- Horas motor actuales -->
       <div>
-        <label class="block font-medium">Horas motor actuales:</label>
+        <label class="block font-medium text-lg">Horas motor actuales:</label>
         <input type="number" name="hr_actual" step="0.1" required
-               class="w-full border p-2 rounded"
+               class="w-full border p-2 rounded text-lg"
                placeholder="Ej. 1234.5" />
       </div>
 
       <!-- Próximo mantenimiento: km y fecha -->
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-2 gap-6">
         <div>
-          <label class="block font-medium">Proximo mantenimiento(Hrs/Motor):</label>
+          <label class="block font-medium text-lg">Proximo mantenimiento(Hrs/Motor):</label>
           <input type="number" name="next_km" required
-                 class="w-full border p-2 rounded"
+                 class="w-full border p-2 rounded text-lg"
                  placeholder="Ej. 150000" />
         </div>
         <div>
-          <label class="block font-medium">Fecha próxima:</label>
+          <label class="block font-medium text-lg">Fecha próxima:</label>
           <input type="date" name="next_date"
-                 class="w-full border p-2 rounded" />
+                 class="w-full border p-2 rounded text-lg" />
         </div>
       </div>
 
       <!-- Checklist dinámico -->
-      <div class="grid gap-4">
+      <div class="grid gap-6">
         {% for key, question, options in items %}
         <div>
-          <label class="block font-medium mb-1">{{ question }}</label>
-          <select name="{{ key }}" required class="w-full border p-2 rounded">
+          <label class="block font-medium mb-1 text-lg">{{ question }}</label>
+          <select name="{{ key }}" required class="w-full border p-2 rounded text-lg">
             <option value="" disabled selected>Selecciona</option>
             {% for opt in options %}
             <option value="{{ opt }}">{{ opt }}</option>
@@ -84,23 +84,23 @@
 
       <!-- Piezas reemplazadas -->
       <div>
-        <label class="block font-medium">Piezas reemplazadas:</label>
-        <input type="text" name="parts" class="w-full border p-2 rounded"
+        <label class="block font-medium text-lg">Piezas reemplazadas:</label>
+        <input type="text" name="parts" class="w-full border p-2 rounded text-lg"
                placeholder="Ej. Filtro aceite, Pastillas de freno" />
       </div>
 
       <!-- Observaciones adicionales -->
       <div>
-        <label class="block font-medium">Observaciones:</label>
-        <textarea name="comments" rows="3" class="w-full border p-2 rounded"
+        <label class="block font-medium text-lg">Observaciones:</label>
+        <textarea name="comments" rows="3" class="w-full border p-2 rounded text-lg"
                   placeholder="Notas…" ></textarea>
       </div>
 
       <!-- Fotos de evidencia -->
       <div>
-        <label class="block font-medium">Fotos (opcional):</label>
+        <label class="block font-medium text-lg">Fotos (opcional):</label>
         <input type="file" name="photos" accept="image/*" multiple
-               class="w-full border p-2 rounded" />
+               class="w-full border p-2 rounded text-lg" />
       </div>
 
       <button type="submit"
