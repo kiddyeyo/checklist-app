@@ -54,19 +54,13 @@ sheet_service = build("sheets", "v4", credentials=creds).spreadsheets()
 # Ítems compartidos (puedes adaptarlos por formulario)
 CHECK_ITEMS = [
     ("lubricante_anticongelante", "Revisa si los niveles de lubricante y anticongelante están dentro del rango:", ["Correcto", "Bajo", "Alto"]),
-    ("fugas",                     "Abre la compuerta y checa filtraciones de combustible/anticongelante/líquido de dirección:", ["Sin fugas", "Con fugas"]),
-    ("tapas",                     "Checa que las tapas de radiador, lubricante y dirección hidráulica estén:", ["Bien cerradas", "Abiertas", "Dañadas"]),
+    ("fugas",                     "Abre el cofre y checa fugas de combustible/anticongelante/líquido de dirección:", ["Sin fugas", "Con fugas"]),
     ("bayoneta",                  "Verifica la bayoneta de aceite (colocación y estado):", ["Correcta", "Mal colocada", "Dañada"]),
-    ("ventilador",                "Inspecciona el ventilador (aspas y montaje):", ["Ok", "Aspas rotas", "Holgura"]),
-    ("cables",                    "Revisa cables y conexiones (especialmente batería):", ["Conectados y en buen estado", "Desconectados", "Dañados"]),
     ("llantas",                   "Verifica presión y estado de todas las llantas:", ["Presión correcta y sin daños", "Baja presión", "Daño en llanta"]),
     ("lineas_aire",               "Inspecciona líneas de aire y cables de compresor de frenos:", ["Buen estado", "Fugas/Pérdida", "Daño"]),
     ("suspension",                "Revisa la suspensión (resortes y bolsas):", ["Ok", "Resortes rotos", "Bolsas dañadas"]),
-    ("indicadores",               "Enciende motor en neutral y checa indicadores y sistema eléctrico:", ["Funcionan", "Falla alguno"]),
-    ("clutch",                    "Presiona y suelta el clutch; revisa presión y respuesta:", ["Buena respuesta", "Falla en presión"]),
-    ("frenos",                    "Avanza y prueba freno normal y de emergencia:", ["Operan correctamente", "Falla normal", "Falla emergencia"]),
-    ("fugas2",                    "Tras apagar motor, revisa nuevamente filtraciones:", ["Sin fugas", "Con fugas"]),
-    ("bandas",                    "Verifica tensión y giro libre de bandas:", ["Tensión correcta", "Flojas/Tensas", "Obstrucción"]),
+    ("indicadores",               "Enciende y checa indicadores y sistema eléctrico:", ["Funcionan", "Falla alguno"]),
+    ("clutch",                    "Presiona y suelta el clutch y frenos; revisa presión y respuesta:", ["Buena respuesta", "Falla en presión"]),
     ("luces",                     "Chequea luces, direccionales e intermitentes:", ["Todas operan", "Alguna falla"])
 ]
 

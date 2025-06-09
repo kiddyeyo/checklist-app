@@ -4,13 +4,16 @@ services:
     build: .
     ports: ["8000:8000"]
     networks: [infraestructura_app-network]
+    env_file:
+      - .env
     environment:
       - GOOGLE_SHEETS_CREDENTIALS_JSON=/app/credentials.json
-      - SHEETS_SPREADSHEET_ID=1I44YXC1eksW3k0xbN4wfsusmaT0oCISwQYyeuUFdrQ4
+      - SHEETS_SPREADSHEET_ID={$SHEETS_SPREADSHEET_ID}
     volumes:
       - ./credentials.json:/app/credentials.json:ro
       - ./data:/app/data:ro
       - ./uploads:/app/uploads
+      - ./videos:/app/videos:ro       # <— monta aquí tu carpeta de vídeos
     restart: unless-stopped
     labels:
       - "traefik.enable=true"

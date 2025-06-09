@@ -7,12 +7,12 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet" />
 </head>
 <body class="bg-gray-100 p-6">
-  <div class="max-w-4xl mx-auto bg-white p-8 rounded shadow">
+  <div class="max-w-6xl mx-auto bg-white p-8 rounded shadow">
     <h1 class="text-3xl font-bold mb-6 text-center">Videos Disponibles</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {% for video in videos %}
         <div class="flex flex-col items-center">
-          <video controls preload="metadata" class="w-full rounded shadow-lg mb-2">
+          <video controls preload="metadata" class="w-full md:w-4/5 lg:w-3/4 mx-auto rounded shadow-lg mb-2">
             <source src="{{ url_for('videos_static', path=video) }}" type="video/{{ video.split('.')[-1] }}">
             Tu navegador no soporta este tipo de video.
           </video>
