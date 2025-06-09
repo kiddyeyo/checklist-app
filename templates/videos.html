@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reproductor de Videos</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-4xl mx-auto bg-white p-8 rounded shadow">
+    <h1 class="text-3xl font-bold mb-6 text-center">Videos Disponibles</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {% for video in videos %}
+        <div class="flex flex-col items-center">
+          <video controls class="w-full rounded shadow-lg mb-2">
+            <source src="{{ url_for('videos_static', path=video) }}" type="video/{{ video.split('.')[-1] }}">
+            Tu navegador no soporta este tipo de video.
+          </video>
+          <span class="text-sm text-gray-600">{{ video }}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="mt-8 text-center">
+      <a href="/" class="inline-block bg-gray-800 text-white py-2 px-4 rounded-lg">← Volver al Menú</a>
+    </div>
+  </div>
+</body>
+</html>
