@@ -6,4 +6,3 @@ google-auth
 python-dotenv
 jinja2
 python-multipart
-httpx
