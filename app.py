@@ -137,7 +137,8 @@ async def precheck_form(request: Request):
 async def submit_precheck(request: Request, photos: list[UploadFile] = File(None)):
     form = await request.form()
     now = datetime.now(ZoneInfo("America/Hermosillo"))
-    date_str, time_str = now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
+    date_str = now.strftime("%Y-%m-%d")
+    time_str = form.get("check_time") or now.strftime("%H:%M:%S")
 
     row = [
         date_str, time_str,
