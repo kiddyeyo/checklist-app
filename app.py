@@ -240,18 +240,19 @@ async def submit_mantenimiento(request: Request, photos: list[UploadFile] = File
     urls = await save_uploaded_images(request, photos)
     row.append(" | ".join(urls))
 
-    # --- NUEVO: Página de Videos ---
+
+    save_row_to_sheet(row, "Mantenimiento")
+    return templates.TemplateResponse("success.html", {"request": request})
+
 @app.get("/videos")
 async def videos_page(request: Request):
-    # Listar todos los archivos de vídeo en VIDEOS_DIR
+    """Muestra los videos disponibles en el directorio de videos."""
     video_files = [
         f for f in os.listdir(VIDEOS_DIR)
         if f.lower().endswith((".mp4", ".webm", ".ogg"))
     ]
-    return templates.TemplateResponse("videos.html", {
-        "request": request,
-        "videos": video_files
-    })
+    return templates.TemplateResponse(
+        "videos.html",
+        {"request": request, "videos": video_files}
+    )
 
-    save_row_to_sheet(row, "Mantenimiento")
-    return templates.TemplateResponse("success.html", {"request": request})
